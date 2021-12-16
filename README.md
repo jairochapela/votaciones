@@ -84,6 +84,8 @@ urlpatterns = [
 ]
 ```
 
+Probe o funcionamento visitando http://localhost:8000.
+
 ## Creación dos modelos
 
 En `polls/models.py` definir os modelos `Question` e `Choice`.
@@ -127,4 +129,28 @@ E agora procesaranse as migracións pendentes con este outro comando:
 ```python
 python manage.py migrate 
 ```
+
+## Creación dun superusuario
+
+Un superusuario é quen de facer operacións administrativas no sitio web. Django incorpora unha interface administrativa na que só este tipos de usuarios poden entrar. Para iso, cómpre crear un destes usuarios. Proceda con este comando:
+
+```shell
+python manage.py createsuperuser
+```
+
+Responda as preguntas e terá o seu superusuario. Visite agora http://localhost:8000/admin e probe a iniciar sesión coas credenciais elexidas.
+
+## Interface administrativa da app polls
+
+Na área de administración poderá observar que non aparecen os modelos definidos para a app polls. Iso débese a que en ningún momento se estableceu que terían que aparecer. É necesario declaralo no ficheiro `polls/admin.py`. 
+
+```python
+from django.contrib import admin
+
+from .models import Question
+
+admin.site.register(Question)
+```
+
+Garde os cambios e recargue a páxina de administración. Aparecerá o modelo Question no menú da esquerda.
 
