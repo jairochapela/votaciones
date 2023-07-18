@@ -1,0 +1,94 @@
+{% extends 'polls/base.html' %}
+
+{% block content %}
+    <h1>{{ question.question_text }}</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <canvas id="bar-chart"></canvas>
+
+          
+
+          </div>
+        
+          <div class="col-md-4">
+            <canvas id="pie-chart"></canvas>
+          </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Choice</th>
+                <th>Votes</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for choice in choices %}
+            <tr>
+                <td>{{ choice.choice_text }}</td>
+                <td>{{ choice.votes }}</td>
+            </tr>
+    {% endfor %}
+        </tbody>
+      </table>      
+
+      {{ choices|json_script:"chart-data" }}
+
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const choices = JSON.parse(document.getElementById('chart-data').textContent);
+        const COLORS = ['#4dc9f6', '#f67019', '#f53794', '#537bc4', '#acc236', '#166a8f', '#00a950', '#58595b', '#8549ba'];
+        const ctx_bar = document.getElementById('bar-chart');
+      
+        new Chart(ctx_bar, {
+          type: 'bar',
+          data: {
+            labels: choices.map(c => c.choice_text),
+            datasets: [{
+              label: '# of Votes',
+              data: choices.map(c => c.votes),
+              borderWidth: 1,
+            }]
+          },
+          options: {
+            pointLabel: "",
+            backgroundColor: choices.map(c => COLORS[c.id % COLORS.length]),
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+
+        const ctx_pie = document.getElementById('pie-chart');
+
+        new Chart(ctx_pie, {
+          type: 'pie',
+          data: {
+            labels: choices.map(c => c.choice_text),
+            datasets: [{
+              label: '# of Votes',
+              data: choices.map(c => c.votes),
+              borderWidth: 1
+            }]
+          },
+          options: {
+            backgroundColor: choices.map(c => COLORS[c.id % COLORS.length]),
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      </script>
+
+
+
+    <a href="{% url 'polls:index' %}">Ir al inicio</a>
+       
+
+{% endblock %}

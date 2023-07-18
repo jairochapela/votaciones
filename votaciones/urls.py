@@ -21,4 +21,5 @@ urlpatterns = [
     path('', lambda request: redirect('polls/', permanent=False)),
     path('polls/', include('polls.urls', namespace='polls')),
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]

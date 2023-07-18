@@ -16,6 +16,13 @@ class Choice(models.Model):
     def __str__(self) -> str:
         return f'{self.choice_text}'
     
+    # def __dict__(self) -> dict:
+    #     return {
+    #         'id': self.id,
+    #         'text': self.choice_text,
+    #         'votes': self.votes,
+    #     }
+    
 
 class Vote(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)

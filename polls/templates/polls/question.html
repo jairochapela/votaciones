@@ -1,10 +1,18 @@
 {% extends 'polls/base.html' %}
 
 {% block content %}
-<h1>{{ question.question_text }}</h1>
-<form action="" method="post">
-    {% csrf_token %}
-    {{form}}
-    <input type="submit" value="Votar">
-</form>
+    <h1>{{ question.question_text }}</h1>
+    {% if voted %}
+    <p>Gracias por votar.</p>
+    <a href="{% url 'polls:index' %}">Ir al inicio</a>
+    {% else %}
+    <form action="" method="post">
+        {% csrf_token %}
+        {{form}}
+        <input type="submit" value="Votar">
+    </form>
+    {% endif %}
+    {% if user.is_authenticated and user.is_staff %}
+    <a href="{% url 'polls:results' question.id %}">Resultados de la votación</a>
+    {% endif %}
 {% endblock %}
