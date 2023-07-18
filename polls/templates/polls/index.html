@@ -1,0 +1,22 @@
+{% extends 'polls/base.html' %}
+
+{% block content %}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Question</th>
+            <th>Pub Date</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for item in items %}
+        <tr>
+            <td><a href="{% url 'polls:question' item.id %}">{{ item.question_text }}</a></td>
+            <td>{{ item.pub_date }}</td>
+        </tr>
+{% endfor %}    
+    </tbody>
+</table>
+
+{% endblock %}

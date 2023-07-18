@@ -15,3 +15,15 @@ class Choice(models.Model):
 
     def __str__(self) -> str:
         return f'{self.choice_text}'
+    
+
+class Vote(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('question', 'user')
+
+    def __str__(self) -> str:
+        return f'{self.ip_address} - {self.pub_date}'
