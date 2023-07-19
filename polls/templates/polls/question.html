@@ -9,7 +9,7 @@
     <form action="" method="post">
         {% csrf_token %}
         {{form}}
-        <input type="submit" value="Votar">
+        <input class="btn btn-primary" type="submit" value="Votar">
     </form>
     {% endif %}
     {% if user.is_authenticated and user.is_staff %}
