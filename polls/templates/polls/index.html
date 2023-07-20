@@ -2,11 +2,16 @@
 
 {% block content %}
 
+<h1>Encuestas</h1>
+
+
+
 <table class="table">
     <thead>
         <tr>
             <th>Question</th>
             <th>Pub Date</th>
+            <th>Availability</th>
         </tr>
     </thead>
     <tbody>
@@ -14,6 +19,7 @@
         <tr>
             <td><a href="{% url 'polls:question' item.id %}">{{ item.question_text }}</a></td>
             <td>{{ item.pub_date }}</td>
+            <td>{{ item.available_from }} &dash; {{ item.available_until }}</td>
         </tr>
 {% endfor %}    
     </tbody>

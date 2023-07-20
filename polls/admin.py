@@ -10,7 +10,11 @@ class ChoiceInline(admin.StackedInline):
     fields = ['choice_text']
 
 class QuestionAdmin(admin.ModelAdmin):
-    fields = ['pub_date', 'question_text']
+    fields = ['question_text', 'available_from', 'available_until']
+    widgets = {
+        'available_from': admin.widgets.AdminSplitDateTime,
+        'available_until': admin.widgets.AdminSplitDateTime,
+    }
     #inline fields for Choice
     inlines = [ChoiceInline]
 

@@ -5,12 +5,13 @@ from django.db import transaction
 from django.db.models import Count
 from django.contrib.auth.mixins import LoginRequiredMixin
 from polls.forms import QuestionForm
+from datetime import datetime
 
 from polls.models import Choice, Question, Vote
 
 
 def index(request):
-    return render(request, 'polls/index.html', {'items': Question.objects.all()})
+    return render(request, 'polls/index.html', {'items': Question.objects.filter(available_from__lte=datetime.now(), available_until__gte=datetime.now()).all()})
 
 
 class QuestionView(LoginRequiredMixin, View):
