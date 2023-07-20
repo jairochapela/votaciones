@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'polls',
     'django.forms',
-    'widget_tweaks'
 ]
 
 MIDDLEWARE = [
