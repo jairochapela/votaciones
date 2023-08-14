@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'polls',
     'django.forms',
+    'oauth2_authcodeflow'
 ]
 
 MIDDLEWARE = [
@@ -125,3 +126,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+AUTHENTICATION_BACKENDS = [
+    'oauth2_authcodeflow.auth.AuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+SESSION_COOKIE_SECURE = False
+OIDC_OP_DISCOVERY_DOCUMENT_URL = "http://localhost:8080/realms/master/.well-known/openid-configuration"
+OIDC_RP_CLIENT_ID = "votaciones1"
+OIDC_RP_CLIENT_SECRET = "60MqaARAE7xnVttgVDy3SeoJgxHmpZm1"
