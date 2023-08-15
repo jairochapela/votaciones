@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +21,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'pik_51#w1y8)43p!fr=ck6%n%es@%4&e(n=&dj09od9_kcq7c7'
+SECRET_KEY = config('SECRET_KEY', default='xxxxxxxxx', cast=str)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
+TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = []
 
@@ -81,12 +83,24 @@ WSGI_APPLICATION = 'votaciones.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+db_engine = config('DB_ENGINE', default='django.db.backends.sqlite3', cast=str)
+
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # },
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'ENGINE': db_engine,
+        'NAME': config('DB_NAME', default='votaciones', cast=str),
+        'USER': config('DB_USER', default='votaciones', cast=str),
+        'PASSWORD': config('DB_PASSWORD', default='xxxxxxxxxx', cast=str),
+        'HOST': config('DB_HOST', default='localhost', cast=str),
+        'PORT': config('DB_PORT', default='5432', cast=str),
+    },
 }
+
+
 
 
 # Password validation
@@ -113,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es-es'
 
-TIME_ZONE = 'Europe/Madrid'
+TIME_ZONE = config('TIME_ZONE', default='Europe/Madrid', cast=str)
 
 USE_I18N = True
 
@@ -133,7 +147,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-SESSION_COOKIE_SECURE = False
-OIDC_OP_DISCOVERY_DOCUMENT_URL = "http://localhost:8080/realms/master/.well-known/openid-configuration"
-OIDC_RP_CLIENT_ID = "votaciones1"
-OIDC_RP_CLIENT_SECRET = "60MqaARAE7xnVttgVDy3SeoJgxHmpZm1"
+SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
+OIDC_OP_DISCOVERY_DOCUMENT_URL = config('OIDC_OP_DISCOVERY_DOCUMENT_URL', default='http://localhost:8080/realms/master/.well-known/openid-configuration', cast=str)
+OIDC_RP_CLIENT_ID = config('OIDC_RP_CLIENT_ID', default='votaciones', cast=str)
+OIDC_RP_CLIENT_SECRET = config('OIDC_RP_CLIENT_SECRET', default='xxxxxxxxxx', cast=str)
