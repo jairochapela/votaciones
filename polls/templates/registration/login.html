@@ -1,4 +1,5 @@
 {% extends 'polls/base.html' %}
+{% load socialaccount %}
 
 {% block stylesheets %}
 {{ block.super }}
@@ -56,7 +57,15 @@
                         <input class="btn btn-primary mt-3" type="submit" value="Autenticarse">
                     </form>
 
-                    <a href="{% url 'oidc_authentication' %}" class="btn btn-link">SSO Login</a>
+                    <div class="mt-1">
+                        {% get_providers as socialaccount_providers %}
+                        {% for p in socialaccount_providers %}
+                            <a class="btn btn-outline-primary" href="{% provider_login_url p %}">Login con {{p}}</a>
+                        {% endfor %}
+                    </div>
+
+
+                    <!-- <a href="{% url 'socialaccount_connections' %}" class="btn btn-link">SSO Login</a> -->
 
                 </div>
             </div>
