@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='xxxxxxxxx', cast=str)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config('DEBUG', default=True, cast=bool)
 TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = []
@@ -41,7 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'polls',
     'django.forms',
-    'oauth2_authcodeflow'
+
+    'allauth',
+    'allauth.account',
+
+    # Optional -- requires install using `django-allauth[socialaccount]`.
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.openid_connect',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +58,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # Add the account middleware:
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 
@@ -86,18 +95,18 @@ WSGI_APPLICATION = 'votaciones.wsgi.application'
 db_engine = config('DB_ENGINE', default='django.db.backends.sqlite3', cast=str)
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # },
     'default': {
-        'ENGINE': db_engine,
-        'NAME': config('DB_NAME', default='votaciones', cast=str),
-        'USER': config('DB_USER', default='votaciones', cast=str),
-        'PASSWORD': config('DB_PASSWORD', default='xxxxxxxxxx', cast=str),
-        'HOST': config('DB_HOST', default='localhost', cast=str),
-        'PORT': config('DB_PORT', default='5432', cast=str),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     },
+    # 'default': {
+    #     'ENGINE': db_engine,
+    #     'NAME': config('DB_NAME', default='votaciones', cast=str),
+    #     'USER': config('DB_USER', default='votaciones', cast=str),
+    #     'PASSWORD': config('DB_PASSWORD', default='xxxxxxxxxx', cast=str),
+    #     'HOST': config('DB_HOST', default='localhost', cast=str),
+    #     'PORT': config('DB_PORT', default='5432', cast=str),
+    # },
 }
 
 
@@ -143,11 +152,49 @@ STATIC_URL = '/static/'
 
 
 AUTHENTICATION_BACKENDS = [
-    'oauth2_authcodeflow.auth.AuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
 OIDC_OP_DISCOVERY_DOCUMENT_URL = config('OIDC_OP_DISCOVERY_DOCUMENT_URL', default='http://localhost:8080/realms/master/.well-known/openid-configuration', cast=str)
 OIDC_RP_CLIENT_ID = config('OIDC_RP_CLIENT_ID', default='votaciones', cast=str)
 OIDC_RP_CLIENT_SECRET = config('OIDC_RP_CLIENT_SECRET', default='xxxxxxxxxx', cast=str)
+
+
+
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    "openid_connect": {
+        # Optional PKCE defaults to False, but may be required by your provider
+        # Can be set globally, or per app (settings).
+        "OAUTH_PKCE_ENABLED": True,
+        "APPS": [
+            {
+                "provider_id": "my-server",
+                "name": "My Login Server",
+                "client_id": "test-1",
+                "secret": "the-secret-key-from-sso-server",
+                "settings": {
+                    "server_url": "http://localhost:8080/realms/master/.well-known/openid-configuration",
+                    # Optional token endpoint authentication method.
+                    # May be one of "client_secret_basic", "client_secret_post"
+                    # If omitted, a method from the the server's
+                    # token auth methods list is used
+                    "token_auth_method": "client_secret_basic",
+                    "oauth_pkce_enabled": True,
+                },
+            },
+            {
+                "provider_id": "other-server",
+                "name": "Other Login Server",
+                "client_id": "your.other.service.id",
+                "secret": "your.other.service.secret",
+                "settings": {
+                    "server_url": "https://other.server.example.com",
+                },
+            },
+        ]
+    }
+}
